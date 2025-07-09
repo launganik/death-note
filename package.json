@@ -1,0 +1,35 @@
+{
+  "name": "crypto-inheritance",
+  "version": "1.0.0",
+  "description": "A lightweight crypto inheritance project with smart contracts and web interface",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run test:contracts && npm run test:backend && npm run test:frontend",
+    "test:contracts": "cd contracts && npx hardhat test",
+    "test:backend": "cd backend && npm test",
+    "test:frontend": "cd frontend && npm test",
+    "compile": "cd contracts && npx hardhat compile",
+    "deploy:local": "cd contracts && npx hardhat run scripts/deploy.js --network localhost",
+    "start:hardhat": "cd contracts && npx hardhat node",
+    "start:backend": "cd backend && npm start",
+    "start:frontend": "cd frontend && npm start",
+    "dev": "concurrently \"npm run start:hardhat\" \"npm run start:backend\" \"npm run start:frontend\"",
+    "install:all": "npm install && cd contracts && npm install && cd ../backend && npm install && cd ../frontend && npm install"
+  },
+  "keywords": [
+    "crypto",
+    "inheritance",
+    "smart-contracts",
+    "ethereum",
+    "defi"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "@ethersproject/providers": "^5.8.0",
+    "@ethersproject/units": "^5.8.0"
+  }
+}
