@@ -9,7 +9,7 @@ This is a crypto inheritance project built with:
 
 ## Development Guidelines
 
-1. **Test-Driven Development**: Always write tests before implementation
+1. **Test-Driven Development**: Always write tests before implementation. Always run all tests after writing new code or making some fixes. If tests fail, fix them.
 2. **Smart Contract Development**: Use Hardhat for compilation, testing, and deployment
 3. **Frontend Development**: Use React with modern hooks and proper wallet integration
 4. **Backend Development**: Use Express with proper error handling and async/await patterns

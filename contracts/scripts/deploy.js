@@ -44,6 +44,13 @@ async function main() {
   );
   
   console.log("Contract addresses saved to frontend and backend directories");
+
+  // Fund the deployer with 100 tokens (optional, since deployer already owns all tokens)
+  // await mockToken.transfer(deployer.address, ethers.parseEther("100"));
+
+  // Approve the inheritance contract to spend 100 tokens on behalf of the deployer
+  await mockToken.approve(await cryptoInheritance.getAddress(), ethers.parseEther("100"));
+  console.log("Approved CryptoInheritance contract to spend 100 tokens");
 }
 
 main()

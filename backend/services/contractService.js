@@ -90,6 +90,7 @@ class ContractService {
 
   /**
    * Trigger inheritance transfer for a wallet
+   * Now supports arbitrary source wallet (deceased)
    */
   async triggerInheritance(walletAddress) {
     try {
@@ -97,31 +98,65 @@ class ContractService {
         await this.init();
       }
 
-      // Check if there's an inheritor nominated
+      // Check if the walletAddress is a valid Ethereum address
+      if (!/^0x[a-fA-F0-9]{40}$/.test(walletAddress)) {
+        return { success: false, error: 'Invalid wallet address' };
+      }
+
+      // Get the inheritor for the given wallet
       const inheritor = await this.cryptoInheritanceContract.getInheritor();
       if (inheritor === ethers.ZeroAddress) {
-        console.log(inheritor + ' is the inheritor address nominated for this wallet');
         return {
           success: false,
           error: 'No inheritor nominated for this wallet'
         };
       }
 
-      // Check if inheritance has already been triggered
-      const isTriggered = await this.cryptoInheritanceContract.isTriggered();
-      if (isTriggered) {
+      // Get the token balance of the deceased wallet
+      const balance = await this.mockTokenContract.balanceOf(walletAddress);
+      if (balance === 0n) {
         return {
           success: false,
-          error: 'Inheritance has already been triggered for this wallet'
+          error: 'No tokens to transfer for this wallet'
         };
       }
 
-      // Trigger the inheritance transfer
-      const tx = await this.cryptoInheritanceContract.triggerInheritance(
-        this.contractAddresses.MockERC20
-      );
+      // Try to get a signer for the deceased wallet (must have private key)
+      let deceasedSigner;
+      try {
+        // If the backend has the private key, use it; otherwise, error
+        // For demo: check if walletAddress matches one of the local Hardhat accounts
+        const accounts = await this.provider.listAccounts();
+        if (accounts.map(a => a.toLowerCase()).includes(walletAddress.toLowerCase())) {
+          deceasedSigner = this.provider.getSigner(walletAddress);
+        } else {
+          return {
+            success: false,
+            error: 'Backend does not have signing authority for this wallet. Only local test accounts are supported.'
+          };
+        }
+      } catch (e) {
+        return {
+          success: false,
+          error: 'Failed to get signer for the deceased wallet.'
+        };
+      }
 
-      // Wait for transaction confirmation
+      // Connect contracts as the deceased wallet
+      const inheritanceAsDeceased = this.cryptoInheritanceContract.connect(deceasedSigner);
+      const tokenAsDeceased = this.mockTokenContract.connect(deceasedSigner);
+
+      // Check allowance
+      const allowance = await tokenAsDeceased.allowance(walletAddress, this.cryptoInheritanceContract.target);
+      if (allowance < balance) {
+        return {
+          success: false,
+          error: 'Allowance is not sufficient for inheritance transfer.'
+        };
+      }
+
+      // Trigger the inheritance transfer as the deceased wallet
+      const tx = await inheritanceAsDeceased.triggerInheritance(this.contractAddresses.MockERC20);
       const receipt = await tx.wait();
 
       return {
@@ -130,7 +165,6 @@ class ContractService {
         inheritor: inheritor,
         tokenAddress: this.contractAddresses.MockERC20
       };
-
     } catch (error) {
       console.error('Error triggering inheritance:', error);
       return {

@@ -87,7 +87,7 @@ app.post('/webhook/death-notification', async (req, res) => {
     res.json({
       success: true,
       message: 'Death notification received, processing inheritance transfer',
-      processingDelay: 5000,
+      processingDelay: 10000,
       timestamp: new Date().toISOString()
     });
 
