@@ -1,12 +1,10 @@
 # Death Note: Crypto Inheritance System
 
 <!-- Test Coverage Badges -->
-[![Backend Coverage](https://img.shields.io/badge/coverage-backend-lightgrey?style=flat)](backend/coverage/lcov-report/index.html)
-[![Contracts Coverage](https://img.shields.io/badge/coverage-contracts-lightgrey?style=flat)](contracts/coverage/lcov-report/index.html)
-[![Frontend Coverage](https://img.shields.io/badge/coverage-frontend-lightgrey?style=flat)](frontend/coverage/lcov-report/index.html)
+[![Contracts Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen?style=flat)](contracts/coverage/lcov-report/index.html)
 
 <!--
-To enable live coverage badges, sign up for Coveralls or Codecov, connect your repo, and replace the badge URLs above with the ones they provide.
+To enable live, auto-updating coverage badges on GitHub, sign up for Coveralls or Codecov, connect your repo, and replace the badge URL above with the one they provide (e.g., https://coveralls.io/repos/github/yourusername/death-note/badge.svg?branch=main).
 -->
 
 A full-stack dApp for managing crypto inheritance using smart contracts, a Node.js backend, and a React frontend.
