@@ -1,0 +1,77 @@
+.inheritor-nomination {
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  background: white;
+}
+
+.current-inheritor {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #e8f5e8;
+  border-radius: 6px;
+  border: 1px solid #c3e6c3;
+}
+
+.nomination-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.address-input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.nominate-button {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.nominate-button:hover:not(:disabled) {
+  background: #218838;
+}
+
+.nominate-button:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+}
+
+.change-button {
+  background: #ffc107;
+  color: #212529;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.change-button:hover {
+  background: #e0a800;
+}
+
+.address {
+  font-family: monospace;
+  background: #f8f9fa;
+  padding: 8px;
+  border-radius: 4px;
+  word-break: break-all;
+}
+
+.error-message {
+  color: #dc3545;
+  padding: 10px;
+  background: #f8d7da;
+  border-radius: 4px;
+  border: 1px solid #f5c6cb;
+}

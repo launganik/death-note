@@ -1,0 +1,126 @@
+.death-webhook {
+  padding: 20px;
+  border: 1px solid #dc3545;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  background: #fff5f5;
+}
+
+.warning {
+  background: #fff3cd;
+  color: #856404;
+  padding: 15px;
+  border-radius: 6px;
+  border: 1px solid #ffeaa7;
+  margin-bottom: 20px;
+  font-weight: bold;
+  text-align: center;
+  font-size: 16px;
+}
+
+.no-wallet {
+  text-align: center;
+}
+
+.trigger-section {
+  text-align: center;
+}
+
+.trigger-button {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.trigger-button:hover:not(:disabled) {
+  background: #c82333;
+}
+
+.trigger-button:disabled,
+.trigger-button.disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+}
+
+.trigger-button.triggered {
+  background: #28a745;
+}
+
+.confirmation-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.confirmation-dialog {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.confirmation-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.cancel-button {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cancel-button:hover {
+  background: #545b62;
+}
+
+.confirm-button {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.confirm-button:hover {
+  background: #c82333;
+}
+
+.error-message {
+  color: #dc3545;
+  margin-top: 15px;
+  padding: 10px;
+  background: #f8d7da;
+  border-radius: 4px;
+  border: 1px solid #f5c6cb;
+}
+
+.status-display {
+  margin-top: 20px;
+  padding: 15px;
+  background: #e7f3ff;
+  border-radius: 6px;
+  border: 1px solid #b3d7ff;
+}
