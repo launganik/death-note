@@ -1,6 +1,6 @@
 module.exports = {
   testEnvironment: 'node',
-  testTimeout: 10000,
+  testTimeout: 7000,
   setupFilesAfterEnv: ['<rootDir>/test/setup.js'],
   collectCoverage: false, // Disable coverage to speed up tests
   verbose: true,

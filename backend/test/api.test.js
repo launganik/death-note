@@ -11,7 +11,7 @@ describe('Crypto Inheritance Backend API', () => {
   
   // Set up test timeouts and teardown
   beforeAll(() => {
-    jest.setTimeout(10000); // 10 seconds timeout
+    jest.setTimeout(7000); // 7 seconds timeout
   });
   
   afterAll(async () => {
@@ -50,7 +50,7 @@ describe('Crypto Inheritance Backend API', () => {
       
       expect(response.body.success).toBe(true);
       expect(response.body.message).toBe('Death notification received, processing inheritance transfer');
-      expect(response.body.processingDelay).toBe(10000); // 10 seconds
+      expect(response.body.processingDelay).toBe(6000); // 6 seconds
     });
 
     it('should reject webhook with missing wallet address', async () => {

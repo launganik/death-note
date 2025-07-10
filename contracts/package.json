@@ -5,7 +5,10 @@
   "scripts": {
     "test": "npx hardhat test",
     "compile": "npx hardhat compile",
-    "node": "npx hardhat node"
+    "coverage": "npx hardhat coverage",
+    "deploy": "npx hardhat run scripts/deploy.js --network localhost",
+    "node": "npx hardhat node",
+    "dev:all": "./dev-all.sh"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +18,8 @@
     "@nomicfoundation/hardhat-toolbox": "^6.0.0",
     "@openzeppelin/contracts": "^5.3.0",
     "hardhat": "^2.25.0",
-    "solidity-coverage": "^0.8.16"
+    "solidity-coverage": "^0.8.16",
+    "concurrently": "^8.2.0",
+    "wait-on": "^7.0.1"
   }
 }

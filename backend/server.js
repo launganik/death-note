@@ -87,19 +87,19 @@ app.post('/webhook/death-notification', async (req, res) => {
     res.json({
       success: true,
       message: 'Death notification received, processing inheritance transfer',
-      processingDelay: 10000,
+      processingDelay: 6000,
       timestamp: new Date().toISOString()
     });
 
     // Broadcast status update via WebSocket
     websocketService.broadcastStatus(walletAddress, {
       status: 'processing',
-      message: 'Death notification received, starting 10-second delay...',
+      message: 'Death notification received, starting 6-second delay...',
       timestamp: new Date().toISOString()
     });
 
-    // Wait 10 seconds before triggering inheritance
-    console.log(`Starting 10-second delay for wallet ${walletAddress}`);
+    // Wait 6 seconds before triggering inheritance
+    console.log(`Starting 6-second delay for wallet ${walletAddress}`);
     
     setTimeout(async () => {
       try {
@@ -116,6 +116,7 @@ app.post('/webhook/death-notification', async (req, res) => {
             status: 'completed',
             message: 'Transfer complete - tokens sent to the nominee',
             transactionHash: result.transactionHash,
+            nomineeAddress: result.nomineeAddress,
             timestamp: new Date().toISOString()
           });
           
@@ -128,6 +129,7 @@ app.post('/webhook/death-notification', async (req, res) => {
             status: 'failed',
             message: 'Inheritance transfer failed',
             error: result.error,
+            nomineeAddress: result.nomineeAddress,
             timestamp: new Date().toISOString()
           });
           
@@ -146,7 +148,7 @@ app.post('/webhook/death-notification', async (req, res) => {
         
         console.error(`Error processing inheritance for ${walletAddress}:`, error);
       }
-    }, 10000); // 10 seconds delay
+    }, 6000); // 6 seconds delay
 
   } catch (error) {
     console.error('Webhook processing error:', error);

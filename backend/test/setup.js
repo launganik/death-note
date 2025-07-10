@@ -2,7 +2,7 @@
 process.env.NODE_ENV = 'test';
 
 // Set test timeout
-jest.setTimeout(10000);
+jest.setTimeout(7000);
 
 // Global test teardown to ensure all async operations are cleaned up
 afterAll(async () => {

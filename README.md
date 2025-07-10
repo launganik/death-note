@@ -9,6 +9,7 @@
 To enable live, auto-updating coverage badges on GitHub, sign up for Coveralls or Codecov, connect your repo, and replace the badge URL above with the one they provide (e.g., https://coveralls.io/repos/github/yourusername/death-note/badge.svg?branch=main).
 -->
 
+
 A full-stack dApp for managing crypto inheritance using smart contracts, a Node.js backend, and a React frontend.
 
 ---

@@ -98,23 +98,31 @@ class ContractService {
         await this.init();
       }
 
+      console.log(`[triggerInheritance] Called for wallet: ${walletAddress}`);
+
       // Check if the walletAddress is a valid Ethereum address
       if (!/^0x[a-fA-F0-9]{40}$/.test(walletAddress)) {
+        console.error(`[triggerInheritance] Invalid wallet address: ${walletAddress}`);
         return { success: false, error: 'Invalid wallet address' };
       }
 
       // Get the inheritor for the given wallet
       const inheritor = await this.cryptoInheritanceContract.getInheritor();
+      console.log(`[triggerInheritance] Inheritor for ${walletAddress}: ${inheritor}`);
       if (inheritor === ethers.ZeroAddress) {
+        console.error(`[triggerInheritance] No inheritor nominated for wallet: ${walletAddress}`);
         return {
           success: false,
-          error: 'No inheritor nominated for this wallet'
+          error: 'No inheritor nominated for this wallet',
+          nomineeAddress: null
         };
       }
 
       // Get the token balance of the deceased wallet
       const balance = await this.mockTokenContract.balanceOf(walletAddress);
+      console.log(`[triggerInheritance] Token balance for ${walletAddress}: ${balance}`);
       if (balance === 0n) {
+        console.error(`[triggerInheritance] No tokens to transfer for wallet: ${walletAddress}`);
         return {
           success: false,
           error: 'No tokens to transfer for this wallet'
@@ -130,14 +138,15 @@ class ContractService {
         if (accounts.map(a => a.toLowerCase()).includes(walletAddress.toLowerCase())) {
           deceasedSigner = this.provider.getSigner(walletAddress);
         } else {
+          console.error(`[triggerInheritance] Backend does not have signing authority for wallet: ${walletAddress}`);
           return {
             success: false,
             error: 'Backend does not have signing authority for this wallet. Only local test accounts are supported.'
           };
         }
       } catch (e) {
+        console.error(`[triggerInheritance] Failed to get signer for wallet: ${walletAddress}`, e);
         return {
-          success: false,
           error: 'Failed to get signer for the deceased wallet.'
         };
       }
@@ -148,7 +157,9 @@ class ContractService {
 
       // Check allowance
       const allowance = await tokenAsDeceased.allowance(walletAddress, this.cryptoInheritanceContract.target);
+      console.log(`[triggerInheritance] Allowance for contract to spend tokens from ${walletAddress}: ${allowance}`);
       if (allowance < balance) {
+        console.error(`[triggerInheritance] Allowance is not sufficient for inheritance transfer. Allowance: ${allowance}, Balance: ${balance}`);
         return {
           success: false,
           error: 'Allowance is not sufficient for inheritance transfer.'
@@ -156,20 +167,30 @@ class ContractService {
       }
 
       // Trigger the inheritance transfer as the deceased wallet
-      const tx = await inheritanceAsDeceased.triggerInheritance(this.contractAddresses.MockERC20);
-      const receipt = await tx.wait();
-
-      return {
-        success: true,
-        transactionHash: receipt.hash,
-        inheritor: inheritor,
-        tokenAddress: this.contractAddresses.MockERC20
-      };
+      try {
+        const tx = await inheritanceAsDeceased.triggerInheritance(this.contractAddresses.MockERC20);
+        const receipt = await tx.wait();
+        console.log(`[triggerInheritance] Inheritance transfer successful. Tx hash: ${tx.hash}`);
+        return {
+          success: true,
+          transactionHash: tx.hash,
+          tokenAddress: this.contractAddresses.MockERC20,
+          nomineeAddress: inheritor
+        };
+      } catch (error) {
+        console.error(`[triggerInheritance] Error during inheritance transfer:`, error);
+        return {
+          success: false,
+          error: error.message || 'Failed to trigger inheritance',
+          nomineeAddress: inheritor
+        };
+      }
     } catch (error) {
-      console.error('Error triggering inheritance:', error);
+      console.error('[triggerInheritance] Unexpected error:', error);
       return {
         success: false,
-        error: error.message || 'Failed to trigger inheritance'
+        error: error.message || 'Failed to trigger inheritance',
+        nomineeAddress: null
       };
     }
   }
