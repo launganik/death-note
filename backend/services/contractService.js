@@ -89,6 +89,31 @@ class ContractService {
   }
 
   /**
+   * Nominate an inheritor for a wallet (owner only)
+   */
+  async nominateInheritor(walletAddress, inheritorAddress) {
+    try {
+      if (!this.isInitialized) {
+        await this.init();
+      }
+      console.log(`[nominateInheritor] Called for wallet: ${walletAddress}, nominee: ${inheritorAddress}`);
+      // Connect as the wallet owner
+      const signer = this.provider.getSigner(walletAddress);
+      const contract = this.cryptoInheritanceContract.connect(signer);
+      const before = await contract.getInheritor();
+      console.log(`[nominateInheritor] Before nomination, inheritor: ${before}`);
+      const tx = await contract.nominateInheritor(inheritorAddress);
+      await tx.wait();
+      const after = await contract.getInheritor();
+      console.log(`[nominateInheritor] After nomination, inheritor: ${after}`);
+      return { success: true, inheritor: after };
+    } catch (err) {
+      console.error('[nominateInheritor] Error:', err);
+      return { success: false, error: err.message };
+    }
+  }
+
+  /**
    * Trigger inheritance transfer for a wallet
    * Now supports arbitrary source wallet (deceased)
    */
@@ -97,7 +122,6 @@ class ContractService {
       if (!this.isInitialized) {
         await this.init();
       }
-
       console.log(`[triggerInheritance] Called for wallet: ${walletAddress}`);
 
       // Check if the walletAddress is a valid Ethereum address

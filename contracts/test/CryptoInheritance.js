@@ -81,6 +81,25 @@ describe("CryptoInheritance", function () {
     });
   });
 
+  describe('Inheritor nomination persistence', function () {
+    it('should not revert to zero address after nomination', async function () {
+      const [owner, nominee] = await ethers.getSigners();
+      const contract = await ethers.deployContract('CryptoInheritance');
+      await contract.waitForDeployment();
+      // Initially zero
+      expect(await contract.getInheritor()).to.equal(ethers.ZeroAddress);
+      // Nominate
+      await contract.connect(owner).nominateInheritor(nominee.address);
+      expect(await contract.getInheritor()).to.equal(nominee.address);
+      // Should remain unless cancelled
+      await contract.connect(owner).nominateInheritor(nominee.address);
+      expect(await contract.getInheritor()).to.equal(nominee.address);
+      // Cancel
+      await contract.connect(owner).cancelNomination();
+      expect(await contract.getInheritor()).to.equal(ethers.ZeroAddress);
+    });
+  });
+
   describe("Token Transfer on Death", function () {
     beforeEach(async function () {
       // Nominate inheritor before each test
