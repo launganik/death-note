@@ -3,6 +3,8 @@
 <!-- Test Coverage Badges -->
 [![Contracts Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen?style=flat)](contracts/coverage/lcov-report/index.html)
 
+*The coverage percentage above reflects only the smart contracts folder.*
+
 <!--
 To enable live, auto-updating coverage badges on GitHub, sign up for Coveralls or Codecov, connect your repo, and replace the badge URL above with the one they provide (e.g., https://coveralls.io/repos/github/yourusername/death-note/badge.svg?branch=main).
 -->
