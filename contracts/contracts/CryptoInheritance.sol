@@ -38,7 +38,7 @@ contract CryptoInheritance is Ownable, Pausable {
      * @dev Nominate an inheritor who will receive tokens upon trigger
      * @param _inheritor The address of the inheritor
      */
-    function nominateInheritor(address _inheritor) external onlyOwner whenNotPaused {
+    function nominateInheritor(address _inheritor) external whenNotPaused {
         require(_inheritor != address(0), "Inheritor cannot be zero address");
         
         inheritor = _inheritor;
@@ -48,7 +48,7 @@ contract CryptoInheritance is Ownable, Pausable {
     /**
      * @dev Cancel the current nomination
      */
-    function cancelNomination() external onlyOwner {
+    function cancelNomination() external whenNotPaused {
         inheritor = address(0);
         emit NominationCancelled();
     }
@@ -57,16 +57,16 @@ contract CryptoInheritance is Ownable, Pausable {
      * @dev Trigger the inheritance transfer for a specific ERC20 token
      * @param tokenAddress The address of the ERC20 token to transfer
      */
-    function triggerInheritance(address tokenAddress) external onlyOwner whenNotPaused notTriggered {
+    function triggerInheritance(address tokenAddress) external whenNotPaused notTriggered {
         require(inheritor != address(0), "No inheritor nominated");
         
         IERC20 token = IERC20(tokenAddress);
-        uint256 balance = token.balanceOf(owner());
+        uint256 balance = token.balanceOf(msg.sender);
         
         require(balance > 0, "No tokens to transfer");
         
-        // Transfer all tokens from owner to inheritor
-        require(token.transferFrom(owner(), inheritor, balance), "Token transfer failed");
+        // Transfer all tokens from the caller (deceased) to inheritor
+        require(token.transferFrom(msg.sender, inheritor, balance), "Token transfer failed");
         
         isTriggered = true;
         emit InheritanceTriggered(tokenAddress, inheritor);

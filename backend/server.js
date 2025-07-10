@@ -47,6 +47,7 @@ app.get('/health', (req, res) => {
  */
 app.post('/webhook/death-notification', async (req, res) => {
   try {
+    console.log('[Webhook] Incoming request:', JSON.stringify(req.body, null, 2));
     const { walletAddress, timestamp, eventType } = req.body;
 
     // Validate required fields
@@ -84,12 +85,14 @@ app.post('/webhook/death-notification', async (req, res) => {
     processingStatus.set(walletAddress, 'processing');
 
     // Respond immediately to webhook
-    res.json({
+    const responsePayload = {
       success: true,
       message: 'Death notification received, processing inheritance transfer',
       processingDelay: 6000,
       timestamp: new Date().toISOString()
-    });
+    };
+    res.json(responsePayload);
+    console.log('[Webhook] Response sent:', JSON.stringify(responsePayload, null, 2));
 
     // Broadcast status update via WebSocket
     websocketService.broadcastStatus(walletAddress, {
@@ -110,7 +113,6 @@ app.post('/webhook/death-notification', async (req, res) => {
         
         if (result.success) {
           processingStatus.set(walletAddress, 'completed');
-          
           // Broadcast success via WebSocket
           websocketService.broadcastStatus(walletAddress, {
             status: 'completed',
@@ -119,11 +121,10 @@ app.post('/webhook/death-notification', async (req, res) => {
             nomineeAddress: result.nomineeAddress,
             timestamp: new Date().toISOString()
           });
-          
           console.log(`Inheritance transfer completed for ${walletAddress}`);
+          console.log(`[Result] Success: Transaction hash: ${result.transactionHash}, Nominee: ${result.nomineeAddress}`);
         } else {
           processingStatus.set(walletAddress, 'failed');
-          
           // Broadcast failure via WebSocket
           websocketService.broadcastStatus(walletAddress, {
             status: 'failed',
@@ -132,12 +133,11 @@ app.post('/webhook/death-notification', async (req, res) => {
             nomineeAddress: result.nomineeAddress,
             timestamp: new Date().toISOString()
           });
-          
           console.error(`Inheritance transfer failed for ${walletAddress}:`, result.error);
+          console.error(`[Result] Failure: Error: ${result.error}, Nominee: ${result.nomineeAddress}`);
         }
       } catch (error) {
         processingStatus.set(walletAddress, 'failed');
-        
         // Broadcast error via WebSocket
         websocketService.broadcastStatus(walletAddress, {
           status: 'failed',
@@ -145,7 +145,6 @@ app.post('/webhook/death-notification', async (req, res) => {
           error: error.message,
           timestamp: new Date().toISOString()
         });
-        
         console.error(`Error processing inheritance for ${walletAddress}:`, error);
       }
     }, 6000); // 6 seconds delay
@@ -180,6 +179,77 @@ app.get('/status/:walletAddress', (req, res) => {
     status,
     timestamp: new Date().toISOString()
   });
+});
+
+/**
+ * Approve tokens endpoint
+ * Allows a wallet to approve the inheritance contract to spend tokens
+ */
+app.post('/approve-tokens', async (req, res) => {
+  try {
+    console.log('[Approve] Incoming request:', JSON.stringify(req.body, null, 2));
+    const { walletAddress, amount } = req.body;
+
+    // Validate required fields
+    if (!walletAddress) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required field: walletAddress'
+      });
+    }
+
+    if (!amount) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required field: amount'
+      });
+    }
+
+    // Validate wallet address format
+    if (!isValidEthereumAddress(walletAddress)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid wallet address format'
+      });
+    }
+
+    // Validate amount is a positive number
+    const numAmount = parseFloat(amount);
+    if (isNaN(numAmount) || numAmount <= 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'Amount must be a positive number'
+      });
+    }
+
+    // Approve tokens
+    const result = await contractService.approveTokens(walletAddress, amount);
+    
+    if (result.success) {
+      res.json({
+        success: true,
+        message: 'Token approval successful',
+        transactionHash: result.transactionHash,
+        approvedAmount: result.approvedAmount,
+        timestamp: new Date().toISOString()
+      });
+      console.log(`Token approval successful for ${walletAddress}: ${result.approvedAmount} tokens`);
+    } else {
+      res.status(400).json({
+        success: false,
+        error: result.error,
+        timestamp: new Date().toISOString()
+      });
+      console.error(`Token approval failed for ${walletAddress}:`, result.error);
+    }
+
+  } catch (error) {
+    console.error('Token approval error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Internal server error'
+    });
+  }
 });
 
 /**
