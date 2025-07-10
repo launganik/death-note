@@ -1,117 +1,41 @@
-# Death Note: Crypto Inheritance System
-
-<!-- Test Coverage Badges -->
 [![Contracts Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen?style=flat)](contracts/coverage/lcov-report/index.html)
 
-*The coverage percentage above reflects only the smart contracts folder.*
+# Crypto Inheritance dApp
+A full-stack dApp for managing crypto inheritance using smart contracts, a Node.js 
+backend, and a React frontend.
 
-<!--
-To enable live, auto-updating coverage badges on GitHub, sign up for Coveralls or Codecov, connect your repo, and replace the badge URL above with the one they provide (e.g., https://coveralls.io/repos/github/yourusername/death-note/badge.svg?branch=main).
--->
+## Quick Start
 
+1. **Install dependencies** (run once):
+   ```sh
+   cd contracts && npm install
+   cd ../backend && npm install
+   cd ../frontend && npm install
+   ```
 
-A full-stack dApp for managing crypto inheritance using smart contracts, a Node.js backend, and a React frontend.
+2. **Start the entire system** (from `contracts` directory):
+   ```sh
+   npm run dev:all
+   ```
+   This will:
+   - Start the local Hardhat node
+   - Deploy contracts and update addresses
+   - Start the backend server
+   - Start the frontend React app
 
----
+3. **Open the app:**
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:3001
 
-## Prerequisites
-- [Node.js](https://nodejs.org/) (v16+ recommended)
-- [npm](https://www.npmjs.com/)
-- [Hardhat](https://hardhat.org/) (installed locally via npm)
-- [MetaMask](https://metamask.io/) (for frontend wallet connection)
+## Features
+- Nominate an inheritor for your wallet
+- Trigger inheritance transfer via death event
+- Real-time status updates and token balances
 
----
-
-## 1. Clone the Repository
-```sh
-git clone https://github.com/launganik/death-note.git
-cd death-note
-```
-
----
-
-## 2. Install Dependencies
-Install for all sub-projects:
-```sh
-cd contracts && npm install
-cd ../backend && npm install
-cd ../frontend && npm install
-```
-
----
-
-## 3. Start Local Blockchain (Hardhat Node)
-```sh
-cd contracts
-npx hardhat node
-```
-Leave this running in a terminal window.
+## For development & troubleshooting
+- Logs are saved in `contracts/node.log`, `backend.log`, and `frontend.log`
+- Stop all services with Ctrl+C in the terminal running `npm run dev:all`
 
 ---
 
-## 4. Deploy Contracts
-In a new terminal:
-```sh
-cd contracts
-npx hardhat run scripts/deploy.js --network localhost
-```
-This will deploy contracts and update addresses for backend and frontend.
-
----
-
-## 5. Start the Backend Server
-In a new terminal:
-```sh
-cd backend
-npm start
-```
-The backend will run on [http://localhost:3001](http://localhost:3001).
-
----
-
-## 6. Start the Frontend
-In a new terminal:
-```sh
-cd frontend
-npm start
-```
-The frontend will run on [http://localhost:3000](http://localhost:3000).
-
----
-
-## 7. Using the App
-- **Connect your wallet** (MetaMask, using the local Hardhat network).
-- **Nominate an inheritor** using the UI.
-- **Trigger the death event** to transfer tokens to the inheritor.
-- **Monitor balances and status** in real time.
-
----
-
-## 8. Running Tests
-### Contracts
-```sh
-cd contracts
-npx hardhat test
-```
-### Backend
-```sh
-cd backend
-npm test
-```
-### Frontend
-```sh
-cd frontend
-npm test
-```
-
----
-
-## Troubleshooting
-- Ensure all contract addresses are up-to-date in `backend/contractAddresses.json` and `frontend/src/contractAddresses.json` (the deploy script handles this).
-- Make sure your local blockchain (Hardhat node) is running before deploying or using the app.
-- If you redeploy contracts, restart backend and frontend servers.
-
----
-
-## License
-MIT 
+For more details, see the full documentation in each subfolder. 
